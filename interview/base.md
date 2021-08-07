@@ -200,6 +200,115 @@ LinkedList是一个双链表,在添加和删除元素时具有比ArrayList更好
 
 
 
+### 11、HashMap和HashTable的区别
+
+1. **两者父类不同**
+
+   HashMap是继承自AbstractMap类，而Hashtable是继承自Dictionary类。不过它们都实现了同时
+   实现了map、Cloneable（可复制）、Serializable（可序列化）这三个接口。  
+
+2. **对外提供的接口不同**
+
+   Hashtable比HashMap多提供了elments() 和contains() 两个方法。
+
+   elments() 方法继承自Hashtable的父类Dictionnary。elements() 方法用于返回此Hashtable中的value的枚举。
+
+   contains()方法判断该Hashtable是否包含传入的value。它的作用与containsValue()一致。事实上，contansValue() 就只是调用了一下contains() 方法。  
+
+3. **对null的支持不同**
+
+   Hashtable：key和value都不能为null。
+   HashMap：key和value都可以为null，但只能有一个key为null，因为必须保证key的唯一性；value可以有多个为null。  
+
+4. **安全性不同**
+
+   HashMap是线程不安全的，在多线程并发的环境下，可能会产生死锁等问题，因此需要开发人员自己处理多线程的安全问题。  
+
+   Hashtable是线程安全的，它的每个方法上都有synchronized 关键字，因此可直接用于多线程中。虽然HashMap是线程不安全的，但是它的效率远远高于Hashtable，这样设计是合理的，因为大部分的使用场景都是单线程。当需要多线程操作的时候可以使用线程安全的ConcurrentHashMap。  
+
+   ConcurrentHashMap虽然也是线程安全的，但是它的效率比Hashtable要高好多倍。因为ConcurrentHashMap使用了分段锁，并不对整个数据进行锁定。  
+
+5. **初始容量大小和每次扩容量大小不同**
+
+   |           | 初始容量 | 扩容量         | 加载因子 |
+   | --------- | -------- | -------------- | -------- |
+   | HashMap   | 16       | 原容量的 1 倍  | 0.75     |
+   | Hashtable | 11       | 2*原数组长度+1 | 0.75     |
+
+   
+
+6. **计算hash值的方法不同**
+
+
+
+### 12、Collection包结构，与Collections的区别
+
+* Collection是集合类的上级接口，子接口有 Set、List、Vector；  
+* Collections是集合类的一个帮助类， 它包含有各种有关集合操作的静态多态方法，用于实现对各种集合的搜索、排序、线程安全化等操作。此类不能实例化，就像一个工具类，服务于Java的Collection框架。  
+
+
+
+### 13、Java的四种引用，强弱软虚  
+
+1. ##### **强引用**
+
+   强引用是平常中使用最多的引用，强引用在程序内存不足（OOM）的时候也不会被回收，使用方式：
+
+   ```java
+   String str = new String("str");
+   System.out.println(str);
+   ```
+
+2. **软引用**
+
+   软引用在程序内存不足时，会被回收，使用方式：  
+
+   ```java
+   // 注意：wrf这个引用也是强引用，它是指向SoftReference这个对象的，
+   // 这里的软引用指的是指向new String("str")的引用，也就是SoftReference类中T
+   SoftReference<String> wrf = new SoftReference<String>(new String("str"));
+   ```
+
+   可用场景： 创建缓存的时候，创建的对象放进缓存中，当内存不足时，JVM就会回收早先创建的对象。  
+
+3. **弱引用**
+
+   弱引用就是只要JVM垃圾回收器发现了它，就会将之回收，使用方式：
+
+   ```java
+   WeakReference<String> wrf = new WeakReference<String>(str);
+   ```
+
+   可用场景： Java源码中的 java.util.WeakHashMap 中的 key 就是使用弱引用，我的理解就是，一旦我不需要某个引用，JVM会自动帮我处理它，这样我就不需要做其它操作。  
+
+4. **虚引用**
+
+   虚引用的回收机制跟弱引用差不多，但是它被回收之前，会被放入 ReferenceQueue 中。注意，其它引用是被JVM回收后才被传入 ReferenceQueue 中的。由于这个机制，所以虚引用大多被用于引用销毁前的处理工作。还有就是，虚引用创建的时候，必须带有 ReferenceQueue ，
+   使用例子：  
+
+   ```java
+   PhantomReference<String> prf = new PhantomReference<String>(new String("str"),
+   new ReferenceQueue<>());
+   ```
+
+   可用场景： 对象销毁前的一些操作，比如说资源释放等。 Object.finalize() 虽然也可以做这类动作，但是这个方式即不安全又低效  
+
+   上诉所说的几类引用，都是指对象本身的引用，而不是指Reference的四个子类的引用(SoftReference等)。  
+
+   ### 14、泛型常用特点
+
+   泛型是Java SE 1.5之后的特性， 《Java 核心技术》中对泛型的定义是：**“泛型” 意味着编写的代码可以被不同类型的对象所重用**。  
+
+   “泛型”，顾名思义，“泛指的类型”。我们提供了泛指的概念，但具体执行的时候却可以有具体的规则来约束，比如我们用的非常多的ArrayList就是个泛型类，ArrayList作为集合可以存放各种元素，如Integer, String，自定义的各种类型等，但在我们使用的时候通过具体的规则来约束，如我们可以约
+   束集合中只存放Integer类型的元素，如
+
+   ```java
+   List<Integer> iniData = new ArrayList<>()
+   ```
+
+   使用泛型的好处？
+   以集合来举例，使用泛型的好处是我们不必因为添加元素类型的不同而定义不同类型的集合，如整型集合类，浮点型集合类，字符串集合类，我们可以定义一个集合来存放整型、浮点型，字符串数据，而这并不是最重要的，因为我们只要把底层存储设置了Object即可，添加的数据全部都可向上转型为Object。 更重要的是我们可以通过规则按照自己的想法控制存储的数据类型。  
+
 ## 面向对象
 
 ### 1、面向对象和面向过程的区别
