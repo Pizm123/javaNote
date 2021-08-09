@@ -7,5 +7,5 @@
 * [垃圾回收机制及算法](5_GCAlgorithm.md)
 * [垃圾回收器](6_GC.md)
 * [堆外内存](7_HeapOutRAM.md)
-* [JVM发生OOM]()
+* [JVM发生OOM](8_JVMOOM.md)
 
