@@ -1,4 +1,12 @@
-一、 Git 常用命令速查
+## 常用
+
+git commit -m 'first commit'
+
+git push origin master
+
+
+
+一、 Git 常用命令速
 
 git branch 查看本地所有分支
 git status 查看当前状态 
@@ -37,6 +45,7 @@ git commit -m "remove" 移除文件(从Git中删除)
 git rm -f a.a 强行移除修改后文件(从暂存区和工作区中删除)
 git diff --cached 或 $ git diff --staged 查看尚未提交的更新
 git stash push 将文件给push到一个临时空间中
+
 git stash pop 将文件从临时空间pop下来
 ---------------------------------------------------------
 git remote add origin git@github.com:username/Hello-World.git
